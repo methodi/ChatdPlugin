@@ -12,23 +12,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 public class ChatdPlugin extends CordovaPlugin {
-	private final String START_SERVICE = "startService";
-	private final String STOP_SERVICE = "stopService";
+	private final String START_SERVICE = "start";
+	private final String STOP_SERVICE = "stop";
 	private BroadcastReceiver receiver;
 	private Intent intentMyService;
     private Context context;
-	
-	private String url;
-	private JSONObject options;
-	private CallbackContext callbackContext;
 
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		//서비스 시작
 		if (action.equals(START_SERVICE)) {
-			url = args.getString(1);
-			options = args.getJSONObject(2);
-			this.callbackContext = callbackContext;
-			
 			this.startService();
 		//서비스 종료
 		} else if (action.equals(STOP_SERVICE)){
