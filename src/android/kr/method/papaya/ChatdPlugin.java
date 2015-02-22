@@ -3,8 +3,10 @@ package kr.method.papaya;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.LOG;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -23,10 +25,12 @@ public class ChatdPlugin extends CordovaPlugin {
 	private Intent intentMyService;
     private Context context;
     private ChatdService mBoundService;
+    private CallbackContext callbackContext;
 
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		//서비스 시작
 		if (action.equals(START_SERVICE)) {
+			this.callbackContext = callbackContext;
 			this.startService();
 		//서비스 종료
 		} else if (action.equals(STOP_SERVICE)){
@@ -85,18 +89,48 @@ public class ChatdPlugin extends CordovaPlugin {
 	}
 	
 	public void onMessage(int action,String message){
+		JSONObject event = new JSONObject();
 		switch(action){
 		case ChatdWebsocketClient.OPEN:
-			
+			try {
+				event.put("type","open");
+				PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, event);
+			    pluginResult.setKeepCallback(true);
+				callbackContext.sendPluginResult(pluginResult);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		break;
 		case ChatdWebsocketClient.CLOSE:
-			
+			try {
+				event.put("type","close");
+				PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, event);
+			    pluginResult.setKeepCallback(true);
+				callbackContext.sendPluginResult(pluginResult);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		break;
 		case ChatdWebsocketClient.MESSAGE:
-			
+			try {
+				event.put("type","message");
+				event.put("data",message);
+				PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, event);
+			    pluginResult.setKeepCallback(true);
+				callbackContext.sendPluginResult(pluginResult);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		break;
 		case ChatdWebsocketClient.ERROR:
-			
+			try {
+				event.put("type","error");
+				PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR, event);
+			    pluginResult.setKeepCallback(true);
+				callbackContext.sendPluginResult(pluginResult);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		break;
 		}
 	}
