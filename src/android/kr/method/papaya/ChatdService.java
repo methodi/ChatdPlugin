@@ -13,6 +13,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -22,13 +23,21 @@ public class ChatdService extends Service {
 	private static final int REBOOT_DELAY_TIMER = 5 * 1000;
 	
 	ChatdWebsocketClient websocket;
+	ChatdPlugin chatdPlugin;
+	
+	public class LocalBinder extends Binder {
+		ChatdService getService() {
+            return ChatdService.this;
+        }
+    }
+	private final IBinder mBinder = new LocalBinder();
 	/**
 	 * 
 	 */
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.d("ChatdService", "onBind()");
-		return null;
+		return mBinder;
 	}
 	
 	/**
@@ -101,6 +110,14 @@ public class ChatdService extends Service {
 			
 		break;
 		}
+	}
+	
+	public void bindPlugin(ChatdPlugin chatdPlugin){
+		this.chatdPlugin = chatdPlugin;
+	}
+	
+	public void unbindPlugin(){
+		this.chatdPlugin = null;
 	}
 	
 	/**
