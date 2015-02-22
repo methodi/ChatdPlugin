@@ -14,6 +14,12 @@ ChatdPlugin.prototype.stop = function() {
     cordova.exec(successCallback, errorCallback, "ChatdPlugin", "stop", []);
 };
 
+ChatdPlugin.prototype.send = function(message) {
+    successCallback = function() {};
+	errorCallback = function() {};
+    cordova.exec(successCallback, errorCallback, "ChatdPlugin", "send", [message]);
+};
+
 if(!window.plugins) {
     window.plugins = {};
 }
