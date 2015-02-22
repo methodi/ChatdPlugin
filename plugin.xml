@@ -57,6 +57,8 @@
 			</receiver>
 		</config-file>
 
+		<source-file src="src/android/res/values/chatd_strings.xml" target-dir="res/values/" />
+
 		<source-file src="src/android/kr/method/papaya/ChatdPlugin.java" target-dir="src/kr/method/papaya/" />
 		<source-file src="src/android/kr/method/papaya/ChatdService.java" target-dir="src/kr/method/papaya/" />
 		<source-file src="src/android/kr/method/papaya/RestartService.java" target-dir="src/kr/method/papaya/" />
