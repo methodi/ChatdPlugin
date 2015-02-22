@@ -110,6 +110,9 @@ public class ChatdService extends Service {
 			
 		break;
 		}
+		if(chatdPlugin!=null){
+			chatdPlugin.onMessage(action, message);
+		}
 	}
 	
 	public void bindPlugin(ChatdPlugin chatdPlugin){
