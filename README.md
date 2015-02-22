@@ -1,1 +1,1 @@
-# PapayaChatdPlugin
+# Papaya ChatdPlugin
