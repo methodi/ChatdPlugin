@@ -1,16 +1,17 @@
 
 var ChatdPlugin = function(){}
 
-ChatdPlugin.prototype.startService = function() {
-    successCallback = function() {};
+ChatdPlugin.prototype.start = function(successCallback,options) {
+	if(!successCallback){successCallback = function() {};}
 	errorCallback = function() {};
-    cordova.exec(successCallback, errorCallback, "ChatdPlugin", "startService", []);
+	
+    cordova.exec(successCallback, errorCallback, "ChatdPlugin", "start", [options]);
 };
 
-ChatdPlugin.prototype.stopService = function() {
+ChatdPlugin.prototype.stop = function() {
     successCallback = function() {};
 	errorCallback = function() {};
-    cordova.exec(successCallback, errorCallback, "ChatdPlugin", "stopService", []);
+    cordova.exec(successCallback, errorCallback, "ChatdPlugin", "stop", []);
 };
 
 if(!window.plugins) {
