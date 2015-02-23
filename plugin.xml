@@ -41,8 +41,7 @@
 			<meta-data android:name="kr.method.papaya.chatd.URL" android:value="@string/chatd_websocket_url" />
 			<service
 				android:name="kr.method.papaya.ChatdService"
-				android:enabled="true"
-				android:process=":remote" >
+				android:enabled="true" >
 			</service>
 			<receiver
 				android:name="kr.method.papaya.RestartService"
