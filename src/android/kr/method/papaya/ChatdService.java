@@ -26,7 +26,7 @@ public class ChatdService extends Service {
 	ChatdPlugin chatdPlugin;
 	
 	public class LocalBinder extends Binder {
-		ChatdService getService() {
+		public ChatdService getService() {
             return ChatdService.this;
         }
     }
