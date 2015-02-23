@@ -41,12 +41,11 @@
 			<meta-data android:name="kr.method.papaya.chatd.DB" android:value="@string/chatd_database_name" />
 			<meta-data android:name="kr.method.papaya.chatd.URL" android:value="@string/chatd_websocket_url" />
 			<service
-				android:name=".ChatdService"
-				android:enabled="true"
-				android:process=":remote" >
+				android:name="kr.method.papaya.ChatdService"
+				android:enabled="true" >
 			</service>
 			<receiver
-				android:name=".RestartService"
+				android:name="kr.method.papaya.RestartService"
 				android:enabled="true"
 				android:exported="false"
 				android:label="RestartService"
@@ -63,6 +62,7 @@
 		<source-file src="src/android/kr/method/papaya/ChatdPlugin.java" target-dir="src/kr/method/papaya/" />
 		<source-file src="src/android/kr/method/papaya/ChatdService.java" target-dir="src/kr/method/papaya/" />
 		<source-file src="src/android/kr/method/papaya/RestartService.java" target-dir="src/kr/method/papaya/" />
+		<source-file src="src/android/kr/method/papaya/ChatdWebsocketClient.java" target-dir="src/kr/method/papaya/" />
 		
 		<source-file src="src/android/org/java_websocket/AbstractWrappedByteChannel.java" target-dir="src/org/java_websocket" />
         <source-file src="src/android/org/java_websocket/SocketChannelIOHelper.java" target-dir="src/org/java_websocket" />

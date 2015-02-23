@@ -1,5 +1,7 @@
 package kr.method.papaya;
 
+import kr.method.papaya.ChatdService.LocalBinder;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.LOG;
@@ -68,7 +70,7 @@ public class ChatdPlugin extends CordovaPlugin {
             IntentFilter mainFilter = new IntentFilter("kr.method.papaya.USER_ACTION");
             
             context.registerReceiver(receiver, mainFilter);
-            //context.startService(intentMyService);
+            context.startService(intentMyService);
             context.bindService(intentMyService, mConnection, Context.BIND_AUTO_CREATE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,13 +139,14 @@ public class ChatdPlugin extends CordovaPlugin {
 	
 	private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            mBoundService = ((ChatdService.LocalBinder)service).getService();
-            mBoundService.bindPlugin(ChatdPlugin.this);
+        	LocalBinder binder = (LocalBinder) service;
+        	ChatdPlugin.this.mBoundService = binder.getService();
+        	ChatdPlugin.this.mBoundService.bindPlugin(ChatdPlugin.this);
         }
 
         public void onServiceDisconnected(ComponentName className) {
-        	mBoundService.unbindPlugin();
-            mBoundService = null;
+        	ChatdPlugin.this.mBoundService.unbindPlugin();
+        	ChatdPlugin.this.mBoundService = null;
         }
     };
 }
