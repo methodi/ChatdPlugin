@@ -16,6 +16,8 @@ import org.java_websocket.framing.FramedataImpl1;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
 
+import android.util.Log;
+
 public class ChatdWebsocketClient extends WebSocketClient {
   private FrameBuilder frameBuilder;
   private ChatdService chatdService;
@@ -36,6 +38,7 @@ public class ChatdWebsocketClient extends WebSocketClient {
 
   public ChatdWebsocketClient(URI serverURI, Draft draft, Map<String, String> headers, ChatdService chatdService) {
     super(serverURI, draft, headers, 0);
+	Log.d("ChatdService", "ChatdWebsocketClient"+serverURI.getHost());
     this.frameBuilder = new FramedataImpl1();
     this.chatdService = chatdService;
     
@@ -52,13 +55,13 @@ public class ChatdWebsocketClient extends WebSocketClient {
   }
 
   @Override
-  public void onOpen(ServerHandshake handshakedata) {
+  public void onOpen(ServerHandshake handshakedata) {Log.d("ChatdService", "ChatdWebsocketClient onOpen");
     //sendResult("", "open", PluginResult.Status.OK);
 	  chatdService.onMessage(OPEN, "");
   }
 
   @Override
-  public void onMessage(String message) {
+  public void onMessage(String message) {Log.d("ChatdService", "ChatdWebsocketClient onMessage");
     //sendResult(message, "message", PluginResult.Status.OK);
 	  chatdService.onMessage(MESSAGE, message);
   }
@@ -91,13 +94,13 @@ public class ChatdWebsocketClient extends WebSocketClient {
   }
 
   @Override
-  public void onClose(int code, String reason, boolean remote) {
+  public void onClose(int code, String reason, boolean remote) {Log.d("ChatdService", "ChatdWebsocketClient onClose");
     //sendResult("", "close", PluginResult.Status.OK);
 	  chatdService.onMessage(CLOSE, "");
   }
 
   @Override
-  public void onError(Exception ex) {
+  public void onError(Exception ex) {Log.d("ChatdService", "ChatdWebsocketClient onError");
     //sendResult(ex.getMessage(), "error", PluginResult.Status.ERROR);
 	  chatdService.onMessage(ERROR, ex.getMessage());
   }

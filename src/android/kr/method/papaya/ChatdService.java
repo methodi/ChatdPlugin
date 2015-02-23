@@ -1,11 +1,17 @@
 package kr.method.papaya;
 
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.cordova.CallbackContext;
 import org.apache.cordova.LOG;
+import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_17;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -17,10 +23,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+import android.webkit.CookieManager;
 
 public class ChatdService extends Service {
 	private static final String TAG = "ChatdService";
-	private static final int REBOOT_DELAY_TIMER = 5 * 1000;
+	private static final int REBOOT_DELAY_TIMER = 10 * 1000;
 	
 	ChatdWebsocketClient websocket;
 	ChatdPlugin chatdPlugin;
@@ -31,6 +38,15 @@ public class ChatdService extends Service {
         }
     }
 	private final IBinder mBinder = new LocalBinder();
+	
+	  private static final Map<String, String> draftMap = new HashMap<String, String>();
+	  static {
+	    draftMap.put("draft10", "org.java_websocket.drafts.Draft_10");
+	    draftMap.put("draft17", "org.java_websocket.drafts.Draft_17");
+	    draftMap.put("draft75", "org.java_websocket.drafts.Draft_75");
+	    draftMap.put("draft76", "org.java_websocket.drafts.Draft_76");
+	  }
+	  
 	/**
 	 * 
 	 */
@@ -46,7 +62,6 @@ public class ChatdService extends Service {
 	@Override
 	public void onCreate() {LOG.d("ChatdService", "onCreate");
 		unregisterRestartAlarm();
-		connect(getMetadata("kr.method.papaya.chatd.URL"));
 		super.onCreate();
 	}
 	
@@ -66,6 +81,9 @@ public class ChatdService extends Service {
 	@Override
 	public void onStart(Intent intent, int startId){LOG.d("ChatdService", "onStart");
 		super.onStart(intent, startId);
+		if(websocket==null){
+			connect();
+		}
 	}
 	
 	/**
@@ -98,16 +116,16 @@ public class ChatdService extends Service {
 	public void onMessage(int action,String message){
 		switch(action){
 		case ChatdWebsocketClient.OPEN:
-			
+			Log.d("ChatdService", "onMessage OPEN"+message);
 		break;
 		case ChatdWebsocketClient.CLOSE:
-			
+			Log.d("ChatdService", "onMessage CLOSE"+message);
 		break;
 		case ChatdWebsocketClient.MESSAGE:
-			
+			Log.d("ChatdService", "onMessage MESSAGE"+message);
 		break;
 		case ChatdWebsocketClient.ERROR:
-			
+			Log.d("ChatdService", "onMessage ERROR"+message);
 		break;
 		}
 		if(chatdPlugin!=null){
@@ -123,15 +141,24 @@ public class ChatdService extends Service {
 		this.chatdPlugin = null;
 	}
 	
+	public void connect(String id,String password,String deviceId){
+		
+	}
+	
 	/**
 	 * 웹소켓 프로토콜로 Papaya chatd 서버에 접속한다.
-	 * @param url 웹소켓 접속서버 경로
-	 * @param options 웹소켓 접속 설정
 	 */
-	private void connect(String url){
+	public void connect(){
+		String url = getMetadata("kr.method.papaya.chatd.URL");
+		LOG.d("ChatdService", url);
 		if(websocket!=null){disconnect();}
 		try {
-			websocket =  new ChatdWebsocketClient(new URI(url), new Draft_17(), new HashMap<String, String>(), this);
+			Map<String, String> headers = new HashMap<String, String>();
+			CookieManager cookieManager = CookieManager.getInstance();
+			URI uri = new URI(url);
+			headers.put("cookie", cookieManager.getCookie(uri.getHost()));
+			websocket =  new ChatdWebsocketClient(uri, getDraft(new JSONObject()), headers, this);
+			websocket.connect();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
@@ -148,7 +175,7 @@ public class ChatdService extends Service {
 	 * @param url 웹소켓 접속서버 경로
 	 * @param options 웹소켓 접속 설정
 	 */
-	private void disconnect(){
+	public void disconnect(){
 		if(websocket!=null){
 			websocket.close();
 			websocket = null;
@@ -168,5 +195,35 @@ public class ChatdService extends Service {
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
+    }
+    
+    public Draft getDraft(JSONObject options) {
+
+      String draftName;
+      Draft draft = new Draft_17();
+          
+      try {
+        draftName = options.getString("draft");
+      } 
+      catch (JSONException e1) {
+        return draft;
+      }
+     
+      if (draftName != null) {
+        String draftClassName = draftMap.get(draftName);
+        
+        if (draftClassName != null) {
+          try {
+            Class<?> clazz = Class.forName(draftClassName);
+            Constructor<?> ctor = clazz.getConstructor();
+            draft = (Draft) ctor.newInstance();
+          }
+          catch (Exception e) {
+            //callbackContext.error("Draft not found.");
+          }
+        }
+      }
+      
+      return draft;
     }
 }

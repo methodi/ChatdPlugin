@@ -22,6 +22,7 @@ import android.widget.Toast;
 public class ChatdPlugin extends CordovaPlugin {
 	private final String START_SERVICE = "start";
 	private final String STOP_SERVICE = "stop";
+	private final String CHATD_CONNECT = "connect";
 	private final String CHATD_SEND = "send";
 	private BroadcastReceiver receiver;
 	private Intent intentMyService;
@@ -31,13 +32,18 @@ public class ChatdPlugin extends CordovaPlugin {
 
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		//서비스 시작
-		if (action.equals(START_SERVICE)) {
-			this.callbackContext = callbackContext;
+		if(action.equals(START_SERVICE)) {
 			this.startService();
 		//서비스 종료
-		} else if (action.equals(STOP_SERVICE)){
+		}else if (action.equals(STOP_SERVICE)){
 			this.stopService();
-		} else if (action.equals(CHATD_SEND)){
+		}else if (action.equals(CHATD_CONNECT)){
+			this.callbackContext = callbackContext;
+			String id = args.getString(0);
+			String password = args.getString(1);
+			String deviceId = args.getString(2);
+			this.connect(id,password,deviceId);
+		}else if (action.equals(CHATD_SEND)){
 			String message = args.getString(0);
 			this.send(message);
 		}
@@ -71,7 +77,7 @@ public class ChatdPlugin extends CordovaPlugin {
             
             context.registerReceiver(receiver, mainFilter);
             context.startService(intentMyService);
-            context.bindService(intentMyService, mConnection, Context.BIND_AUTO_CREATE);
+            context.bindService(intentMyService, mConnection, Context.BIND_ADJUST_WITH_ACTIVITY);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,6 +88,12 @@ public class ChatdPlugin extends CordovaPlugin {
 	 */
 	private void stopService(){
 		
+	}
+	
+	public void connect(String id,String password,String deviceId){
+		if(mBoundService!=null){
+			mBoundService.connect(id,password,deviceId);
+		}
 	}
 	
 	public void send(String message){
