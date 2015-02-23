@@ -62,6 +62,7 @@
 		<source-file src="src/android/kr/method/papaya/ChatdPlugin.java" target-dir="src/kr/method/papaya/" />
 		<source-file src="src/android/kr/method/papaya/ChatdService.java" target-dir="src/kr/method/papaya/" />
 		<source-file src="src/android/kr/method/papaya/RestartService.java" target-dir="src/kr/method/papaya/" />
+		<source-file src="src/android/kr/method/papaya/ChatdWebsocketClient.java" target-dir="src/kr/method/papaya/" />
 		
 		<source-file src="src/android/org/java_websocket/AbstractWrappedByteChannel.java" target-dir="src/org/java_websocket" />
         <source-file src="src/android/org/java_websocket/SocketChannelIOHelper.java" target-dir="src/org/java_websocket" />
