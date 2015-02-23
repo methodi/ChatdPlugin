@@ -38,6 +38,7 @@
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<meta-data android:name="kr.method.papaya.chatd.DB" android:value="@string/chatd_database_name" />
 			<meta-data android:name="kr.method.papaya.chatd.URL" android:value="@string/chatd_websocket_url" />
 			<service
 				android:name=".ChatdService"

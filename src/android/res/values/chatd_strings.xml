@@ -1,3 +1,4 @@
 <resources>
+    <string name="chatd_database_name">DatabaseName</string>
     <string name="chatd_websocket_url">ws://YourDomain:9002</string>
 </resources>

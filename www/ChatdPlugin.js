@@ -1,17 +1,24 @@
 
 var ChatdPlugin = function(){}
 
-ChatdPlugin.prototype.start = function(successCallback,options) {
-	if(!successCallback){successCallback = function() {};}
+ChatdPlugin.prototype.start = function() {
+    successCallback = function() {};
 	errorCallback = function() {};
 	
-    cordova.exec(successCallback, errorCallback, "ChatdPlugin", "start", [options]);
+    cordova.exec(successCallback, errorCallback, "ChatdPlugin", "start", []);
 };
 
 ChatdPlugin.prototype.stop = function() {
     successCallback = function() {};
 	errorCallback = function() {};
     cordova.exec(successCallback, errorCallback, "ChatdPlugin", "stop", []);
+};
+
+ChatdPlugin.prototype.connect = function(successCallback,id,password,deviceId) {
+	if(!successCallback){successCallback = function() {};}
+	errorCallback = function() {};
+	
+    cordova.exec(successCallback, errorCallback, "ChatdPlugin", "connect", [id,password,deviceId]);
 };
 
 ChatdPlugin.prototype.send = function(message) {
